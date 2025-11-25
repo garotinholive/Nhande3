@@ -19,10 +19,7 @@
       <div style="display:flex; align-items:center; gap:18px;">
         <div class="nav-links" role="navigation" aria-label="links">
           <a href="#inicio">Início</a>
-          <a href="#professores">Professores & Alunos</a>
-          <a href="#midias">Mídias Educativas</a>
           <a href="#missao">Missão</a>
-          <a href="#valores">Valores Culturais</a>
         </div>
         <a href="#entrar" class="btn-login">Entrar</a>
       </div>
@@ -31,6 +28,7 @@
 
   <!-- HERO -->
   <main>
+    <!-- Background hero: a imagem usada pelo CSS fica em imagens/background.jpeg -->
     <section class="hero" id="inicio" aria-label="Seção principal">
       <div class="hero-content">
         <h1>Nhandé</h1>
@@ -55,6 +53,11 @@
     </section>
   </main>
 
+  <!-- Accessibility / Contrast toggle button (flutuante) -->
+  <button id="accessibility-toggle" aria-pressed="false" aria-label="Ativar alto contraste" title="Ativar alto contraste" class="accessibility-toggle" aria-live="polite">
+    <span class="a11y-icon" aria-hidden="true">⚫️</span>
+    <span class="a11y-label">Alto contraste</span>
+  </button>
   <script src="script.js"></script>
 </body>
 </html>

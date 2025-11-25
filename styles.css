@@ -57,14 +57,17 @@ html,body { height: 100%; font-family: system-ui, -apple-system, "Segoe UI", Rob
 }
 
 .hero::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background-image: url("/mnt/data/f16a7ca5-5b39-45d8-b370-463e9ef72040.png");
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* Use a local image from the imagens/ folder as the hero background */
+  background-image: url("imagens/background.jpeg");
+  background-repeat: no-repeat;
   background-size: cover;
-  background-position: center;
+  background-position: center center;
+  /* Slight visual adjustments to match the design */
   filter: saturate(0.95) contrast(0.9) brightness(0.55);
-  z-index:0;
+  z-index: 0;
 }
 
 .hero::after{
@@ -175,3 +178,63 @@ p.lead {
   .nav { padding:10px 12px; }
   .brand { font-size:18px; }
 }
+
+/* Accessibility toggle button (floating) */
+.accessibility-toggle{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:120;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:#fff;
+  color:#20321b;
+  border:1px solid rgba(0,0,0,0.08);
+  padding:10px 12px;
+  border-radius:40px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  cursor:pointer;
+  font-weight:700;
+  transition: transform .12s ease, opacity .12s ease, background-color .12s ease, color .12s ease;
+}
+.accessibility-toggle:hover{ transform: translateY(-4px) }
+.accessibility-toggle .a11y-icon{ font-size:18px; line-height:1; }
+.accessibility-toggle .a11y-label{ display:inline-block; font-size:13px }
+
+/* Small screens: keep a compact circle */
+@media (max-width:480px){
+  .accessibility-toggle{ padding:10px; gap:0; width:48px; height:48px; border-radius:50%; justify-content:center }
+  .accessibility-toggle .a11y-label{ display:none }
+}
+
+/* High-contrast theme rules */
+body.high-contrast { background-color: #000000 !important; color: #ffffff !important; }
+
+/* Make text and borders high contrast */
+body.high-contrast, body.high-contrast * {
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+/* Keep backgrounds transparent by default but override large areas below */
+body.high-contrast * { background-color: transparent !important; }
+
+/* Topbar and main areas */
+body.high-contrast .topbar { background-color: #000000 !important; color: #ffffff !important; }
+body.high-contrast a { color: #ffd54f !important; text-decoration: underline !important; }
+body.high-contrast .btn-login { background:#ffd54f !important; color:#000 !important; }
+body.high-contrast .btn-primary { background: #ffd54f !important; color: #000 !important; }
+body.high-contrast .btn-secondary { border-color: #ffd54f !important; color: #fff !important; }
+
+/* Replace hero background image with solid dark background to improve legibility */
+body.high-contrast .hero::before{
+  background-image: none !important;
+  background-color: #000000 !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+body.high-contrast .bottom-fade{ display:none }
+
+/* When high-contrast is active change toggle appearance */
+body.high-contrast .accessibility-toggle{ background:#111; color:#ffd54f; border-color: rgba(255,213,79,0.18) }
