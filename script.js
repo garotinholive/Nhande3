@@ -62,10 +62,52 @@ document.querySelectorAll('.nav-links a').forEach(a => {
   if(form){
     form.addEventListener('submit', function(e){
       e.preventDefault();
-      // Comportamento demo mínimo: fechar o modal e simular login
-      closeModal();
-      // Opcional: mostrar mensagem de sucesso ou integrar autenticação aqui
-      alert('Login (demo): formulário enviado — integre autenticação no backend.');
+      const payload = {
+          email: form.querySelector('#login-email').value.trim(),
+          password: form.querySelector('#login-pass').value.trim()
+        };
+
+        // Primeiro verifique se existe um usuário local no localStorage (modo offline/sem backend)
+        try{
+          const localMatch = window.NHANDE_LOCAL_USERS && window.NHANDE_LOCAL_USERS.find(payload.email, payload.password);
+          if(localMatch){
+            closeModal();
+            // Redirecionar para as telas corretas localmente
+            if(localMatch.role === 'professor') return window.location.href = 'professor.html';
+            if(localMatch.role === 'aluno') return window.location.href = 'aluno.html';
+            // visitantes ficam na home por enquanto
+            return window.location.href = 'Index.html';
+          }
+        }catch(err){ console.warn('Erro ao checar usuários locais', err); }
+
+        // Tenta o endpoint do backend; se falhar, mantém o comportamento demo
+        const API = 'http://127.0.0.1:5000/api/login';
+
+        fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+        .then(r => r.json().then(body => ({ ok: r.ok, status: r.status, body })))
+        .then(result => {
+          if(result.ok && result.body && result.body.ok){
+            closeModal();
+            // redirecionar conforme role retornado pelo backend
+            const role = result.body.user.role;
+            if(role === 'professor') return window.location.href = 'professor.html';
+            if(role === 'aluno') return window.location.href = 'aluno.html';
+            return window.location.href = 'Index.html';
+          } else {
+            if(result.status === 401){
+              alert('Credenciais inválidas.');
+            } else if(result.body && result.body.error){
+              alert('Erro do servidor: ' + result.body.error);
+            } else {
+              closeModal();
+              alert('Login (demo): formulário enviado — integre autenticação no backend.');
+            }
+          }
+        })
+        .catch(() => {
+          closeModal();
+          alert('Login (demo): formulário enviado — (backend inacessível)');
+        });
     });
   }
 })();
@@ -163,12 +205,56 @@ document.querySelectorAll('.nav-links a').forEach(a => {
       return;
     }
 
-    // Comportamento demo: fechar e mostrar uma mensagem
-    closeModal();
-    alert('Cadastro (demo): ' + role + ' registrado (integre com backend).');
-    form.reset();
-    // resetar escolhas para o padrão (aluno)
-    selectRole('aluno');
+    // Tentativa de envio para backend (com fallback demo se server indisponível)
+    const payload = {
+      role,
+      name,
+      email,
+      password: 'demo-password',
+      matricula: matricula && matricula.value.trim() ? matricula.value.trim() : undefined,
+      matricula_funcional: matriculaFunc && matriculaFunc.value.trim() ? matriculaFunc.value.trim() : undefined
+    };
+
+    // Primeiro salve localmente — sempre funcionará mesmo sem backend
+    try{
+      const added = window.NHANDE_LOCAL_USERS && window.NHANDE_LOCAL_USERS.add({ name, email, password: payload.password, role, matricula: payload.matricula, matricula_funcional: payload.matricula_funcional });
+      if(added && added.ok){
+        closeModal();
+        alert('Cadastro realizado (local). Usuário: ' + (added.user.name || added.user.email));
+      } else if(added && added.error === 'email_exists'){
+        alert('E-mail já cadastrado (local).');
+        return;
+      }
+    }catch(err){ console.warn('Erro ao salvar localmente', err); }
+
+    // Tenta também enviar para o backend — se estiver online irá sincronizar
+    const API = 'http://127.0.0.1:5000/api/register';
+
+    fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+      .then(r => r.json().then(body => ({ ok: r.ok, status: r.status, body })))
+      .then(result => {
+        if(result.ok && result.body && result.body.ok){
+          closeModal();
+          alert('Cadastro realizado (backend). Usuário: ' + (result.body.user.name || result.body.user.email));
+          form.reset();
+          selectRole('aluno');
+        } else if(result.status === 409){
+          alert('E-mail já cadastrado.');
+        } else if(result.body && result.body.error){
+          alert('Erro: ' + result.body.error);
+        } else {
+          closeModal();
+          alert('Cadastro (demo): ' + role + ' registrado (integre com backend).');
+          form.reset();
+          selectRole('aluno');
+        }
+      })
+      .catch(() => {
+        closeModal();
+        alert('Cadastro (demo): ' + role + ' registrado — backend inacessível.');
+        form.reset();
+        selectRole('aluno');
+      });
   });
 })();
 
@@ -214,4 +300,99 @@ document.querySelectorAll('.nav-links a').forEach(a => {
   });
 
   // Respeitar preferência de 'reduced-motion' para transições, se desejado
+})();
+
+// ---------- Armazenamento local de usuários (localStorage) ----------
+// O objetivo: permitir registro/login sem backend para testes rápidos.
+(function(){
+  const KEY = 'nhande_users_v1';
+
+  function loadLocalUsers(){
+    try{
+      const raw = localStorage.getItem(KEY);
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){ console.warn('Erro ao ler localStorage', e); return null; }
+  }
+
+  function saveLocalUsers(list){
+    try{ localStorage.setItem(KEY, JSON.stringify(list)); return true; }
+    catch(e){ console.warn('Erro ao salvar localStorage', e); return false; }
+  }
+
+  function seedLocalUsers(){
+    let users = loadLocalUsers();
+    if(users && users.length) return users;
+
+    users = [
+      { id: 1, name: 'João Aluno', email: 'joao@example.com', password: '1234', role: 'aluno', matricula: 'A12345' },
+      { id: 2, name: 'Maria Prof', email: 'maria@example.com', password: 'abc123', role: 'professor', matricula_funcional: 'PF-9988' },
+      { id: 3, name: 'Carlos Visit', email: 'carlos@example.com', password: 'visitor', role: 'visitante' }
+    ];
+    saveLocalUsers(users);
+    return users;
+  }
+
+  function nextLocalId(users){
+    if(!users || users.length === 0) return 1;
+    return users.reduce((m,u)=> u.id > m ? u.id : m, users[0].id) + 1;
+  }
+
+  function findLocalUser(email, password){
+    const users = loadLocalUsers() || [];
+    return users.find(u => u.email === email && u.password === password) || null;
+  }
+
+  function addLocalUser(user){
+    const users = loadLocalUsers() || [];
+    if(users.find(u => u.email === user.email)) return { ok:false, error:'email_exists' };
+    user.id = nextLocalId(users);
+    users.push(user);
+    saveLocalUsers(users);
+    return { ok:true, user };
+  }
+
+  // Seed local users on first load (only for testing/dev)
+  seedLocalUsers();
+
+  // Expose helpers to other blocks on window for debugging (optional)
+  window.NHANDE_LOCAL_USERS = {
+    load: loadLocalUsers,
+    save: saveLocalUsers,
+    add: addLocalUser,
+    find: findLocalUser
+  };
+})();
+
+// ---------- Verificação do backend (status) ----------
+(function(){
+  const statusEl = document.getElementById('backend-status');
+  if(!statusEl) return;
+
+  function setStatus(ok){
+    statusEl.setAttribute('aria-hidden','false');
+    if(ok){
+      statusEl.textContent = 'BACKEND: ONLINE';
+      statusEl.classList.remove('offline');
+      statusEl.classList.add('ok');
+    } else {
+      statusEl.textContent = 'BACKEND: OFFLINE';
+      statusEl.classList.remove('ok');
+      statusEl.classList.add('offline');
+    }
+  }
+
+  // Basic probe: GET /health to check connectivity
+  const probe = 'http://127.0.0.1:5000/health';
+  fetch(probe, { method: 'GET' })
+    .then(r => r.json().then(body => ({ ok: r.ok, status: r.status, body })))
+    .then(result => {
+      if(result.ok && result.body && result.body.status === 'ok'){
+        setStatus(true);
+        console.log('Backend health:', result.body);
+      } else {
+        setStatus(false);
+        console.warn('Backend health check returned', result);
+      }
+    })
+    .catch(err => { setStatus(false); console.warn('Erro ao checar backend:', err); });
 })();

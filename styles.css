@@ -294,3 +294,44 @@ body.high-contrast .accessibility-toggle{ background:#111; color:#ffd54f; border
   .register .register-choices{ flex-direction:column }
   .register .register-choices .choice{ width:100% }
 }
+
+/* Dashboards: professor / aluno */
+.dashboard .panel-wrap{ display:flex; gap:28px; max-width:1200px; margin:28px auto; padding:10px; }
+.panel-side{ width:260px; min-width:200px; background: #fff; border-radius:12px; padding:14px; border:1px solid rgba(0,0,0,0.04); box-shadow: 0 8px 30px rgba(0,0,0,0.06); height:calc(100vh - 120px); position:sticky; top:66px; align-self:flex-start }
+.panel-actions{ display:flex; flex-direction:column; gap:10px }
+.panel-actions .action{ text-align:left; padding:12px 14px; border-radius:10px; border:1px solid rgba(0,0,0,0.04); background:transparent; font-weight:700; cursor:pointer; color:#2f4a2a }
+.panel-actions .action:hover{ transform: translateY(-2px); background: rgba(97,128,74,0.06) }
+.panel-actions .action:focus{ outline:3px solid rgba(97,128,74,0.12) }
+
+.panel-main{ flex:1; display:flex; flex-direction:column }
+.panel-header{ padding:18px 8px; margin-bottom:8px }
+.panel-title{ font-size:28px; font-weight:800; color:#2f4a2a }
+.panel-sub{ color:#556a4f; margin-top:6px }
+
+.panel-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:18px; margin:14px 0 }
+.card{ background:#fff; border-radius:12px; padding:18px; border:1px solid rgba(0,0,0,0.04); box-shadow: 0 10px 26px rgba(0,0,0,0.06); color:#1f3a22; font-weight:700 }
+.card.wide{ grid-column: span 3; text-align:center }
+
+.list-section{ margin-top:18px; background:transparent }
+.simple-list{ list-style:none; margin:8px 0; padding-left:0; color:#3a4a35 }
+.simple-list li{ padding:10px 12px; border-radius:8px; border:1px dashed rgba(0,0,0,0.03); margin-bottom:8px }
+
+/* Small screens: stack sidebar above main content */
+@media (max-width:900px){
+  .dashboard .panel-wrap{ flex-direction:column; padding:12px }
+  .panel-side{ width:100%; height:auto; position:relative; top:auto }
+  .panel-grid{ grid-template-columns: repeat(2, 1fr) }
+  .card.wide{ grid-column: span 2 }
+}
+
+@media (max-width:480px){
+  .panel-grid{ grid-template-columns: 1fr }
+  .card.wide{ grid-column: span 1 }
+}
+
+/* Backend status indicator (small label no-intrusive) */
+.backend-status{ position:fixed; right:18px; top:18px; z-index:99999; background: rgba(255,82,82,0.06); color:#6b2f2f; padding:6px 10px; border-radius:8px; font-weight:700; font-size:12px; border:1px solid rgba(0,0,0,0.06); box-shadow: 0 6px 18px rgba(0,0,0,0.06); pointer-events:none; }
+.backend-status.ok{ background: rgba(79, 198, 79, 0.08); color:#1b5b1b; border-color: rgba(0,0,0,0.06) }
+.backend-status.offline{ background: rgba(255, 82, 82, 0.06); color:#6b2f2f; border-color: rgba(0,0,0,0.06) }
+
+@media (max-width:480px){ .backend-status{ right:12px; top:12px; font-size:11px } }
