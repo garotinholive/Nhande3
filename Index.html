@@ -9,7 +9,7 @@
 </head>
 <body>
 
-  <!-- NAV -->
+  <!-- NAV (barra de navegação) -->
   <header class="topbar">
     <nav class="nav" aria-label="Main navigation">
       <div style="display:flex;gap:18px;align-items:center;">
@@ -26,7 +26,7 @@
     </nav>
   </header>
 
-  <!-- HERO -->
+  <!-- HERO (seção principal) -->
   <main>
     <!-- Background hero: a imagem usada pelo CSS fica em imagens/background.jpeg -->
     <section class="hero" id="inicio" aria-label="Seção principal">
@@ -53,11 +53,94 @@
     </section>
   </main>
 
-  <!-- Accessibility / Contrast toggle button (flutuante) -->
+  <!-- Botão de acessibilidade / alternador de contraste (flutuante) -->
   <button id="accessibility-toggle" aria-pressed="false" aria-label="Ativar alto contraste" title="Ativar alto contraste" class="accessibility-toggle" aria-live="polite">
     <span class="a11y-icon" aria-hidden="true">⚫️</span>
     <span class="a11y-label">Alto contraste</span>
   </button>
+  <!-- Login modal (inserido para a seção #entrar) -->
+  <div id="modal-entrar" class="modal" aria-hidden="true" aria-labelledby="login-title" role="dialog">
+    <div class="modal-backdrop" data-close="true"></div>
+    <div class="modal-card" role="document">
+      <header class="modal-header">
+        <h3 id="login-title">Bem-vindo ao Nhandé</h3>
+        <p class="subtitle">Plataforma de Educação Indígena</p>
+      </header>
+
+      <div class="modal-body">
+        <form id="login-form" novalidate>
+          <label for="login-email">E-mail</label>
+          <input id="login-email" name="email" type="email" placeholder="seu@email.com" required>
+
+          <label for="login-pass" class="mt">Senha</label>
+          <input id="login-pass" name="senha" type="password" placeholder="********" required>
+
+          <div class="form-row">
+            <label class="inline"><input type="checkbox" id="login-remember"> Lembrar-me</label>
+            <a href="#" class="forgot">Esqueceu a senha?</a>
+          </div>
+
+          <button type="submit" class="btn-primary full">Entrar</button>
+
+          <p class="muted center">Não tem uma conta? <a href="#cadastrar">Cadastre-se</a></p>
+        </form>
+      </div>
+
+      <footer class="modal-footer">
+        <button class="btn-back" data-close="true">Voltar ao Início</button>
+      </footer>
+    </div>
+  </div>
+  <!-- Cadastro modal (Aluno / Professor / Visitante) -->
+  <div id="modal-cadastrar" class="modal" aria-hidden="true" aria-labelledby="cadastrar-title" role="dialog">
+    <div class="modal-backdrop" data-close="true"></div>
+    <div class="modal-card register" role="document">
+      <header class="modal-header">
+        <h3 id="cadastrar-title">Cadastre-se</h3>
+        <p class="subtitle">Escolha o tipo de conta e preencha os dados</p>
+      </header>
+
+      <div class="modal-body">
+        <div class="register-choices" role="radiogroup" aria-label="Tipo de usuário">
+          <button class="choice" data-role="aluno" aria-checked="true" role="radio">Aluno</button>
+          <button class="choice" data-role="professor" aria-checked="false" role="radio">Professor</button>
+          <button class="choice" data-role="visitante" aria-checked="false" role="radio">Visitante</button>
+        </div>
+
+        <form id="register-form" novalidate>
+          <div class="form-field" data-for-role="all">
+            <label for="reg-nome">Nome</label>
+            <input id="reg-nome" name="nome" type="text" placeholder="Seu nome" required>
+          </div>
+
+          <div class="form-field" data-for-role="all">
+            <label for="reg-email">E-mail</label>
+            <input id="reg-email" name="email" type="email" placeholder="seu@email.com" required>
+          </div>
+
+          <div class="form-field" data-for-role="aluno" style="display:none;">
+            <label for="reg-matricula">Matrícula</label>
+            <input id="reg-matricula" name="matricula" type="text" placeholder="Número de matrícula">
+          </div>
+
+          <div class="form-field" data-for-role="professor" style="display:none;">
+            <label for="reg-matricula-func">Matrícula funcional</label>
+            <input id="reg-matricula-func" name="matricula_func" type="text" placeholder="Matrícula funcional">
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary full">Cadastrar</button>
+          </div>
+
+          <p class="muted center">Já tem uma conta? <a href="#entrar">Entrar</a></p>
+        </form>
+      </div>
+
+      <footer class="modal-footer">
+        <button class="btn-back" data-close="true">Voltar</button>
+      </footer>
+    </div>
+  </div>
   <script src="script.js"></script>
 </body>
 </html>

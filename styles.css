@@ -1,8 +1,8 @@
-/* Reset */
+/* Reset (regras iniciais) */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html,body { height: 100%; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:#25311b; }
 
-/* NAV */
+/* NAV (barra de navegação) */
 .topbar {
   position: sticky;
   top: 0;
@@ -46,7 +46,7 @@ html,body { height: 100%; font-family: system-ui, -apple-system, "Segoe UI", Rob
 }
 .btn-login:hover { transform: translateY(-1px); }
 
-/* HERO */
+/* HERO (seção principal com imagem de fundo) */
 .hero {
   min-height: calc(100vh - 66px);
   display:flex;
@@ -60,12 +60,12 @@ html,body { height: 100%; font-family: system-ui, -apple-system, "Segoe UI", Rob
   content: "";
   position: absolute;
   inset: 0;
-  /* Use a local image from the imagens/ folder as the hero background */
+  /* Usa uma imagem local da pasta imagens/ como fundo do hero */
   background-image: url("imagens/background.jpeg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
-  /* Slight visual adjustments to match the design */
+  /* Pequenos ajustes visuais para combinar com o design */
   filter: saturate(0.95) contrast(0.9) brightness(0.55);
   z-index: 0;
 }
@@ -133,7 +133,7 @@ html,body { height: 100%; font-family: system-ui, -apple-system, "Segoe UI", Rob
 .btn-primary:hover,
 .btn-secondary:hover { transform: translateY(-3px); }
 
-/* Fade inferior */
+/* Fade inferior (gradiente de transição) */
 .bottom-fade {
   position:absolute;
   left:0; right:0; bottom:0;
@@ -166,7 +166,7 @@ p.lead {
   line-height:1.6; 
 }
 
-/* Responsividade */
+/* Responsividade (regras para telas menores) */
 @media (max-width:900px){
   .hero h1 { font-size:48px; }
   .nav-links { display:none; }
@@ -179,12 +179,13 @@ p.lead {
   .brand { font-size:18px; }
 }
 
-/* Accessibility toggle button (floating) */
+/* Botão de acessibilidade / alternador de contraste (flutuante) */
 .accessibility-toggle{
   position:fixed;
   right:18px;
   bottom:18px;
-  z-index:120;
+  /* z-index bem alto para garantir que o botão fique visível e clicável mesmo com modais/sobreposições abertos */
+  z-index:9999;
   display:flex;
   align-items:center;
   gap:8px;
@@ -202,32 +203,32 @@ p.lead {
 .accessibility-toggle .a11y-icon{ font-size:18px; line-height:1; }
 .accessibility-toggle .a11y-label{ display:inline-block; font-size:13px }
 
-/* Small screens: keep a compact circle */
+/* Telas pequenas: manter o botão compacto em forma de círculo */
 @media (max-width:480px){
   .accessibility-toggle{ padding:10px; gap:0; width:48px; height:48px; border-radius:50%; justify-content:center }
   .accessibility-toggle .a11y-label{ display:none }
 }
 
-/* High-contrast theme rules */
+/* Regras do tema de alto contraste */
 body.high-contrast { background-color: #000000 !important; color: #ffffff !important; }
 
-/* Make text and borders high contrast */
+/* Tornar texto e bordas de alto contraste */
 body.high-contrast, body.high-contrast * {
   color: #ffffff !important;
   border-color: #ffffff !important;
 }
 
-/* Keep backgrounds transparent by default but override large areas below */
+/* Manter fundos transparentes por padrão, mas sobrescrever grandes áreas abaixo */
 body.high-contrast * { background-color: transparent !important; }
 
-/* Topbar and main areas */
+/* Topbar e áreas principais */
 body.high-contrast .topbar { background-color: #000000 !important; color: #ffffff !important; }
 body.high-contrast a { color: #ffd54f !important; text-decoration: underline !important; }
 body.high-contrast .btn-login { background:#ffd54f !important; color:#000 !important; }
 body.high-contrast .btn-primary { background: #ffd54f !important; color: #000 !important; }
 body.high-contrast .btn-secondary { border-color: #ffd54f !important; color: #fff !important; }
 
-/* Replace hero background image with solid dark background to improve legibility */
+/* Substituir imagem de fundo do hero por fundo sólido escuro para melhorar legibilidade */
 body.high-contrast .hero::before{
   background-image: none !important;
   background-color: #000000 !important;
@@ -236,5 +237,60 @@ body.high-contrast .hero::before{
 }
 body.high-contrast .bottom-fade{ display:none }
 
-/* When high-contrast is active change toggle appearance */
+/* Quando o modo alto contraste estiver ativo, alterar aparência do botão */
 body.high-contrast .accessibility-toggle{ background:#111; color:#ffd54f; border-color: rgba(255,213,79,0.18) }
+
+/* Garantir que o alternador seja interativo acima das sobreposições */
+.accessibility-toggle{ pointer-events:auto; }
+
+/* Estilos do modal de login (seção #entrar) */
+.modal{ position: fixed; inset: 0; display:none; align-items:center; justify-content:center; z-index:150; }
+.modal[aria-hidden="false"]{ display:flex; }
+.modal-backdrop{ position:absolute; inset:0; background: rgba(0,0,0,0.6); backdrop-filter: blur(2px); }
+.modal-card{ position:relative; width:420px; max-width:92%; border-radius:12px; overflow:hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.6); background: #ffffff; border: 1px solid rgba(0,0,0,0.06); z-index:3 }
+.modal-header{ background:#6b7d4e; color:#fff; padding:28px 26px; text-align:center }
+.modal-header h3{ font-size:22px; margin-bottom:6px; font-weight:800 }
+.modal-header .subtitle{ font-size:13px; opacity:0.9; margin-top:0 }
+.modal-body{ padding:22px 26px 18px }
+.modal-body label{ display:block; font-size:13px; margin-bottom:8px; color:#3a4a35; font-weight:600 }
+.modal-body input[type="email"], .modal-body input[type="password"]{
+  width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(0,0,0,0.06); background:#fbfbf8; margin-bottom:16px; font-size:14px; color:#20321b
+}
+.modal-body input::placeholder{ color:#9aa38e }
+.form-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:14px }
+.form-row .inline { display:flex; align-items:center; gap:8px; font-size:13px; color:#526137 }
+.form-row .forgot{ font-size:13px; color:#6b7d4e; text-decoration:none }
+.btn-primary.full{ width:100%; border-radius:999px; padding:12px 18px; font-weight:800; }
+.muted{ color:#6c6c6c; font-size:13px; margin:12px 0 }
+.muted.center{ text-align:center }
+.modal-footer{ padding:18px 24px 26px; text-align:center; background: #fbfbf8 }
+.btn-back{ display:inline-block; padding:12px 18px; border-radius:999px; background:transparent; border:1px solid rgba(0,0,0,0.06); width:80%; max-width:320px }
+
+/* Aparência do cartão em telas largas */
+.modal-card{ border-radius:12px; }
+
+@media (max-width:520px){
+  .modal-card{ width:92%; }
+  .modal-header{ padding:20px }
+  .modal-body{ padding:18px }
+}
+
+/* Opções de cadastro (Aluno / Professor / Visitante) */
+.register .register-choices{ display:flex; gap:12px; justify-content:space-between; margin-bottom:16px; padding:6px }
+.register .register-choices .choice{
+  flex:1; background:#fff; border-radius:10px; border:1px solid rgba(0,0,0,0.06); padding:12px; text-align:center; cursor:pointer; font-weight:700; color:#3a4a35; transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.register .register-choices .choice[aria-checked="true"]{ background:#f3f7f0; border-color:#6b7d4e; box-shadow: 0 6px 18px rgba(0,0,0,0.08); transform: translateY(-4px); color:#2f4a2a }
+.register .register-choices .choice:focus{ outline:3px solid rgba(97,128,74,0.16) }
+
+.register .form-field{ margin-bottom:14px }
+.register label{ color:#2f4a2a; font-weight:700 }
+
+/* Largura levemente diferente do cartão do modal de cadastro para combinar com o visual da imagem */
+.modal-card.register{ width:520px; max-width:94% }
+
+@media (max-width:540px){
+  .modal-card.register{ width:92% }
+  .register .register-choices{ flex-direction:column }
+  .register .register-choices .choice{ width:100% }
+}

@@ -32,8 +32,36 @@ Observação: Atualizei a navegação da tela inicial removendo as abas/links "P
 
 Adicionei um botão flutuante no canto inferior direito para ativar/desativar o modo de alto contraste — muito útil para acessibilidade.
 
-- Nome do botão no DOM: `#accessibility-toggle`.
-- Atalho de teclado: Alt+Shift+C (também funciona com Meta+Shift+C em sistemas que usam Meta/Command).
-- Preferência salva em `localStorage` na chave `nhande_highContrast`.
+
+Observação: o botão de alto contraste fica sempre visível e clicável — mesmo quando modais ou sobreposições (`backdrop`) estão abertos. Isso garante que o usuário possa alternar o contraste a qualquer momento (o botão foi posicionado acima das camadas do modal via z-index).
 
 Para alterar o comportamento ou as cores, edite `styles.css` (procure `.high-contrast`) e `script.js` para o comportamento do botão.
+
+## Tela de Login (modal)
+
+Adicionei uma tela de login modal igual ao design enviado. Ela aparece quando você clica em "Entrar" na barra superior (ou quando acessar o link `#entrar`).
+
+- Arquivo: `Index.html` (marcação do modal com id `modal-entrar`).
+- Estilos: `styles.css` (novas regras sob "Login modal styles").
+- Comportamento: `script.js` (abre/fecha modal, foco, Escape fecha, formulário de demo).
+
+Como testar:
+- Clique no botão "Entrar" no topo → o modal aparece.
+- Dentro do modal: preencha email/senha e pressione "Entrar"; o formulário é apenas demo (previne submit e mostra alerta). Integre com backend se necessário.
+- Feche clicando fora (backdrop), no botão "Voltar ao Início" ou pressionando Esc.
+
+### Modal de cadastro
+
+Adicionei um modal de cadastro (`modal-cadastrar`) com três perfis:
+
+- **Aluno** — campos: nome, e-mail, matrícula (obrigatório para cadastro)
+- **Professor** — campos: nome, e-mail, matrícula funcional (obrigatório)
+- **Visitante** — campos: nome, e-mail
+
+O fluxo:
+- Abra o modal clicando em "Cadastre-se" (no modal de login) ou navegando para `#cadastrar`.
+- Selecione o tipo de conta clicando na caixinha correspondente — o formulário atualiza dinamicamente os campos visíveis.
+- O formulário é um demo — realiza validação básica no cliente e mostra um alerta quando o cadastro é submetido (integre com backend para persistir dados).
+
+Use os mesmos passos de teste do login: clique em "Cadastre-se", preencha os campos relevantes e pressione "Cadastrar".
+
